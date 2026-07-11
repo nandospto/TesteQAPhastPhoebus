@@ -1,5 +1,6 @@
 # Plano de testes
 
+```gherkin
 Funcionalidade: Validação do EndPoint do cadatro de Pet (REQ-01)
     Como um analista de qualidade
     Quero enviar uma requisição POST com os parâmetros id, name e status
@@ -27,4 +28,3 @@ Funcionalidade: Validação do EndPoint do cadatro de Pet (REQ-01)
         Dado que as variáveis "petStatus" estejam com um tipo de dado diferente de 'string'
         Quando envio a requisição POST para o endpoint
         Então o status code retornado devve ser 400
-        
