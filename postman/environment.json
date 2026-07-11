@@ -1,0 +1,22 @@
+{
+	"id": "81aaec58-549c-4112-8db8-d0d53018c6a3",
+	"name": "AmbientePetTest",
+	"values": [
+		{
+			"key": "basePetURL",
+			"value": "https://petstore.swagger.io",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "versao",
+			"value": "v2",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"color": null,
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2026-07-11T19:14:38.763Z",
+	"_postman_exported_using": "Postman/12.18.4"
+}

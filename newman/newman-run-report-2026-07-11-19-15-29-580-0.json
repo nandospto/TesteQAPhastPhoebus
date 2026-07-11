@@ -1,0 +1,3274 @@
+{
+  "collection": {
+    "_": {
+      "postman_id": "3898335d-c05d-4356-baea-f779e46150a9",
+      "exporter_id": "50055106",
+      "collection_link": "https://go.postman.co/collection/50055106-3898335d-c05d-4356-baea-f779e46150a9?source=collection_link"
+    },
+    "item": [
+      {
+        "id": "ee1bf507-c4ec-42ae-87e8-10b3f88dd57c",
+        "name": "REQ-01",
+        "request": {
+          "url": {
+            "path": [
+              "{{versao}}",
+              "pet"
+            ],
+            "host": [
+              "{{basePetURL}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{{meuBody}}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "2ed9e04f-2937-473a-9b27-4650b198f653",
+              "type": "text/javascript",
+              "exec": [
+                "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                "\r",
+                "const idRNG = meuBody.id;\r",
+                "const nameRNG = meuBody.name;\r",
+                "const statusRNG = meuBody.status;\r",
+                "\r",
+                "console.log(meuBody);\r",
+                "\r",
+                "const caminhoFeliz =\r",
+                "    (typeof idRNG == 'number') &&\r",
+                "    (typeof nameRNG == 'string') &&\r",
+                "    (typeof statusRNG == 'string') && [\"available\", \"pending\", \"sold\"].includes(statusRNG);\r",
+                "\r",
+                "if (caminhoFeliz) {\r",
+                "    pm.test(\"Post status 200 - Body Corretos\", function () {\r",
+                "        pm.response.to.have.status(200);\r",
+                "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                "    });\r",
+                "} else if (typeof idRNG === 'string') {\r",
+                "    pm.test(\"Post status 500 - Id como string\", function () {\r",
+                "        pm.response.to.have.status(500);\r",
+                "        pm.execution.setNextRequest(\"REQ-03\");\r",
+                "    });\r",
+                "}\r",
+                "else {\r",
+                "    pm.test(\"Post status 400 - Body Errado\", function () {\r",
+                "        pm.response.to.have.status(400);\r",
+                "    });\r",
+                "}\r",
+                "\r",
+                "if (pm.response.code === 200) {\r",
+                "    var resposta = pm.response.json();\r",
+                "\r",
+                "    pm.test(\"Body do Post com id e tipo do id corretos\", function () {\r",
+                "        pm.expect(resposta.id).to.be.a('number');\r",
+                "        pm.expect(resposta.id).to.eql(idRNG);\r",
+                "    });\r",
+                "\r",
+                "    pm.test(\"Body do Post com name e tipo name corretos\", function () {\r",
+                "        pm.expect(resposta.name).to.be.a('string');\r",
+                "        pm.expect(resposta.name).to.eql(nameRNG);\r",
+                "    });\r",
+                "\r",
+                "    pm.test(\"Body do Post com status e tipo do status corretos\", function () {\r",
+                "        pm.expect(resposta.status).to.be.a('string');\r",
+                "        pm.expect(resposta.status).to.eql(statusRNG);\r",
+                "    });\r",
+                "}"
+              ],
+              "_lastExecutionId": "e985ab94-700a-4614-95e0-9cf32d1dcc1e"
+            }
+          },
+          {
+            "listen": "prerequest",
+            "script": {
+              "id": "5f68baf2-23e4-41d2-adde-a471fb7ecb34",
+              "type": "text/javascript",
+              "exec": [
+                "const idbase = [Math.floor(Math.random() * 10000), Math.floor(Math.random() * 10000), \"string\"];\r",
+                "const namebase = [\"Pet\" + Math.floor(Math.random() * 10000),\"Pet\" + Math.floor(Math.random() * 10000), 1501];\r",
+                "const statusbase = [\"available\", \"pending\", \"sold\", \"error\", 1];\r",
+                "\r",
+                "const indiceIdRNG = Math.floor(Math.random() * idbase.length);\r",
+                "const indiceNameRNG = Math.floor(Math.random() * namebase.length);\r",
+                "const indiceStatusRNG = Math.floor(Math.random() * statusbase.length);\r",
+                "\r",
+                "\r",
+                "const meuBody ={\r",
+                "    \"id\": idbase[indiceIdRNG],\r",
+                "    \"name\": namebase[indiceNameRNG],\r",
+                "    \"status\": statusbase[indiceStatusRNG]\r",
+                "}\r",
+                "\r",
+                "pm.collectionVariables.set(\"meuBody\", JSON.stringify(meuBody));\r",
+                "pm.collectionVariables.set(\"petId\", idbase[indiceIdRNG]);"
+              ],
+              "_lastExecutionId": "3ec7ec99-9fd0-4b6f-98b0-782bf9f984c1"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a7f4dc0a-6b74-408c-a97b-38bbab2cf57a",
+        "name": "REQ-02",
+        "request": {
+          "url": {
+            "path": [
+              "{{versao}}",
+              "pet",
+              "{{petIdGet}}"
+            ],
+            "host": [
+              "{{basePetURL}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "method": "GET"
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "04e9b4eb-3526-4caf-a838-033a4bdedd28",
+              "type": "text/javascript",
+              "exec": [
+                "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                "\r",
+                "const idRNG = meuBody.id;\r",
+                "const nameRNG = meuBody.name;\r",
+                "const statusRNG = meuBody.status;\r",
+                "\r",
+                "const resposta = pm.response.json();\r",
+                "\r",
+                "console.log(resposta);\r",
+                "\r",
+                "const caminhofeliz = (resposta &&\r",
+                "    resposta.id === idRNG &&\r",
+                "    resposta.name === nameRNG &&\r",
+                "    resposta.status === statusRNG);\r",
+                "\r",
+                "if (caminhofeliz) {\r",
+                "    pm.test(\"Get status 200 - Dados iguais com o Post\", function () {\r",
+                "        pm.response.to.have.status(200);\r",
+                "    });\r",
+                "\r",
+                "    if (pm.response.code === 200) {\r",
+                "        pm.test(\"Resposta do Get com id e tipo do id corretos\", function () {\r",
+                "            pm.expect(resposta.id).to.be.a('number');\r",
+                "            pm.expect(resposta.id).to.eql(idRNG);\r",
+                "        });\r",
+                "        pm.test(\"Resposta do Get com name e tipo do name corretos\", function () {\r",
+                "            pm.expect(resposta.name).to.be.a('string');\r",
+                "            pm.expect(resposta.name).to.eql(nameRNG);\r",
+                "        });\r",
+                "        pm.test(\"Resposta do Get com status e tipo do status corretos\", function () {\r",
+                "            pm.expect(resposta.status).to.be.a('string');\r",
+                "            pm.expect(resposta.status).to.eql(statusRNG);\r",
+                "        });\r",
+                "    }\r",
+                "} else {\r",
+                "    pm.test(\"Get status 200 com Dados diferentes do post\", function () {\r",
+                "        pm.response.to.have.status(200);\r",
+                "    });\r",
+                "}"
+              ],
+              "_lastExecutionId": "45cab361-2db1-445d-b2e5-5788a0d66459"
+            }
+          },
+          {
+            "listen": "prerequest",
+            "script": {
+              "id": "12e5765d-0e51-4e88-bd2e-25a794b51b83",
+              "type": "text/javascript",
+              "exec": [
+                "const idarraytest = [2, pm.collectionVariables.get(\"petId\")];\r",
+                "\r",
+                "const idRNG = Math.floor(Math.random() * idarraytest.length);\r",
+                "const petIdGet = idarraytest[idRNG];\r",
+                "\r",
+                "pm.collectionVariables.set(\"petIdGet\", petIdGet);"
+              ],
+              "_lastExecutionId": "8aea8f6a-a79d-4b23-8b05-3732f2fb364b"
+            }
+          }
+        ]
+      },
+      {
+        "id": "bef3e8ef-90c0-482a-837e-9919e5691cd7",
+        "name": "REQ-03",
+        "request": {
+          "url": {
+            "path": [
+              "{{versao}}",
+              "pet",
+              "{{petIdGet2}}"
+            ],
+            "host": [
+              "{{basePetURL}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "method": "GET"
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "130fc973-47fe-414a-9d3a-ed260dcb543f",
+              "type": "text/javascript",
+              "exec": [
+                "const response = pm.response.json();\r",
+                "\r",
+                "if (!response.id) {\r",
+                "    pm.test(\"Get em pet inexistente\", function () {\r",
+                "        pm.response.to.have.status(404);\r",
+                "    });\r",
+                "} else {\r",
+                "    pm.test(\"Get em pet existente\", function(){\r",
+                "        pm.response.to.have.status(200);\r",
+                "    });\r",
+                "}\r",
+                "\r",
+                "const petId = pm.collectionVariables.get(\"petId\");\r",
+                "\r",
+                "if (typeof petId != 'number') {\r",
+                "    pm.execution.setNextRequest(null);\r",
+                "}"
+              ],
+              "_lastExecutionId": "97b5ccec-8735-4687-bcb8-80e81f76aca3"
+            }
+          },
+          {
+            "listen": "prerequest",
+            "script": {
+              "id": "14bf5fa3-2eae-435a-9959-82e8b68a1918",
+              "type": "text/javascript",
+              "exec": [
+                "const arrayid = [2, 404];\r",
+                "\r",
+                "const indexRNG = Math.floor(Math.random() * arrayid.length);\r",
+                "pm.collectionVariables.set(\"petIdGet2\", arrayid[indexRNG]);"
+              ],
+              "_lastExecutionId": "b3fe356c-6370-49d8-9bf9-d9cd164dc812"
+            }
+          }
+        ]
+      },
+      {
+        "id": "1168afda-0f47-423a-89be-ec158e7e94a8",
+        "name": "REQ-04",
+        "request": {
+          "url": {
+            "path": [
+              "{{versao}}",
+              "pet",
+              "{{petIdDelete}}"
+            ],
+            "host": [
+              "{{basePetURL}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "method": "DELETE"
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "b0c46ea1-3871-492e-82e0-37bc65196101",
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.collectionVariables.get(\"InteraDel\") == 0) {\r",
+                "    pm.test(\"Status code 200 - Pet deletado\", function () {\r",
+                "        pm.collectionVariables.set(\"InteraDel\", 1);\r",
+                "        pm.response.to.have.status(200);\r",
+                "        pm.execution.setNextRequest(\"REQ-04\");\r",
+                "    });\r",
+                "} else {\r",
+                "    pm.test(\"Status code is 404\", function () {\r",
+                "        pm.response.to.have.status(404);\r",
+                "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                "    });\r",
+                "}"
+              ],
+              "_lastExecutionId": "188d55e7-d380-45b0-b12d-d44652607b61"
+            }
+          },
+          {
+            "listen": "prerequest",
+            "script": {
+              "id": "d94596b0-c363-4567-aa26-9f34063d22f6",
+              "type": "text/javascript",
+              "exec": [
+                "const myBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                "\r",
+                "pm.collectionVariables.set(\"petIdDelete\", myBody.id);"
+              ],
+              "_lastExecutionId": "6d38ae17-a52e-493f-b376-991cc9902144"
+            }
+          }
+        ]
+      }
+    ],
+    "event": [
+      {
+        "listen": "prerequest",
+        "script": {
+          "id": "ddb43592-4386-4848-acd6-1682d1b40caf",
+          "type": "text/javascript",
+          "exec": [
+            ""
+          ],
+          "_lastExecutionId": "71b55f49-0f48-4940-8fc9-f32673ff83df"
+        }
+      },
+      {
+        "listen": "test",
+        "script": {
+          "id": "fc1c9437-9733-4476-9f6e-12d8625e2f10",
+          "type": "text/javascript",
+          "exec": [
+            ""
+          ],
+          "_lastExecutionId": "d29ccbb3-891a-45f5-b1be-cc031c485e42"
+        }
+      }
+    ],
+    "variable": [
+      {
+        "type": "any",
+        "value": "",
+        "key": "meuBody"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "petId"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "petIdGet"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "petIdGet2"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "petIdDelete"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "InteraDel"
+      }
+    ],
+    "info": {
+      "_postman_id": "3898335d-c05d-4356-baea-f779e46150a9",
+      "name": "TestePhoebus",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    }
+  },
+  "environment": {
+    "_": {
+      "postman_variable_scope": "environment",
+      "postman_exported_at": "2026-07-11T19:14:38.763Z",
+      "postman_exported_using": "Postman/12.18.4"
+    },
+    "id": "81aaec58-549c-4112-8db8-d0d53018c6a3",
+    "name": "AmbientePetTest",
+    "values": [
+      {
+        "type": "any",
+        "value": "https://petstore.swagger.io",
+        "key": "basePetURL"
+      },
+      {
+        "type": "any",
+        "value": "v2",
+        "key": "versao"
+      }
+    ]
+  },
+  "globals": {
+    "id": "66345c0b-d4f1-47cc-b5f8-4bc753b6fe6b",
+    "values": []
+  },
+  "run": {
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "scripts": {
+        "total": 16,
+        "pending": 0,
+        "failed": 1
+      },
+      "prerequests": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "tests": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 4,
+        "pending": 0,
+        "failed": 2
+      },
+      "testScripts": {
+        "total": 8,
+        "pending": 0,
+        "failed": 1
+      },
+      "prerequestScripts": {
+        "total": 8,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "timings": {
+      "responseAverage": 290.75,
+      "responseMin": 152,
+      "responseMax": 701,
+      "responseSd": 236.86216983722832,
+      "dnsAverage": 0,
+      "dnsMin": 0,
+      "dnsMax": 0,
+      "dnsSd": 0,
+      "firstByteAverage": 0,
+      "firstByteMin": 0,
+      "firstByteMax": 0,
+      "firstByteSd": 0,
+      "started": 1783797327949,
+      "completed": 1783797329529
+    },
+    "executions": [
+      {
+        "cursor": {
+          "position": 0,
+          "iteration": 0,
+          "length": 4,
+          "cycles": 1,
+          "empty": false,
+          "eof": false,
+          "bof": true,
+          "cr": false,
+          "ref": "397f3521-5cf9-4d59-b39b-24164722111a",
+          "httpRequestId": "52644bac-8b1c-4d95-be95-c4a1a844cf04"
+        },
+        "item": {
+          "id": "ee1bf507-c4ec-42ae-87e8-10b3f88dd57c",
+          "name": "REQ-01",
+          "request": {
+            "url": {
+              "path": [
+                "{{versao}}",
+                "pet"
+              ],
+              "host": [
+                "{{basePetURL}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{{meuBody}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2ed9e04f-2937-473a-9b27-4650b198f653",
+                "type": "text/javascript",
+                "exec": [
+                  "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                  "\r",
+                  "const idRNG = meuBody.id;\r",
+                  "const nameRNG = meuBody.name;\r",
+                  "const statusRNG = meuBody.status;\r",
+                  "\r",
+                  "console.log(meuBody);\r",
+                  "\r",
+                  "const caminhoFeliz =\r",
+                  "    (typeof idRNG == 'number') &&\r",
+                  "    (typeof nameRNG == 'string') &&\r",
+                  "    (typeof statusRNG == 'string') && [\"available\", \"pending\", \"sold\"].includes(statusRNG);\r",
+                  "\r",
+                  "if (caminhoFeliz) {\r",
+                  "    pm.test(\"Post status 200 - Body Corretos\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                  "    });\r",
+                  "} else if (typeof idRNG === 'string') {\r",
+                  "    pm.test(\"Post status 500 - Id como string\", function () {\r",
+                  "        pm.response.to.have.status(500);\r",
+                  "        pm.execution.setNextRequest(\"REQ-03\");\r",
+                  "    });\r",
+                  "}\r",
+                  "else {\r",
+                  "    pm.test(\"Post status 400 - Body Errado\", function () {\r",
+                  "        pm.response.to.have.status(400);\r",
+                  "    });\r",
+                  "}\r",
+                  "\r",
+                  "if (pm.response.code === 200) {\r",
+                  "    var resposta = pm.response.json();\r",
+                  "\r",
+                  "    pm.test(\"Body do Post com id e tipo do id corretos\", function () {\r",
+                  "        pm.expect(resposta.id).to.be.a('number');\r",
+                  "        pm.expect(resposta.id).to.eql(idRNG);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Body do Post com name e tipo name corretos\", function () {\r",
+                  "        pm.expect(resposta.name).to.be.a('string');\r",
+                  "        pm.expect(resposta.name).to.eql(nameRNG);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Body do Post com status e tipo do status corretos\", function () {\r",
+                  "        pm.expect(resposta.status).to.be.a('string');\r",
+                  "        pm.expect(resposta.status).to.eql(statusRNG);\r",
+                  "    });\r",
+                  "}"
+                ],
+                "_lastExecutionId": "e985ab94-700a-4614-95e0-9cf32d1dcc1e"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "5f68baf2-23e4-41d2-adde-a471fb7ecb34",
+                "type": "text/javascript",
+                "exec": [
+                  "const idbase = [Math.floor(Math.random() * 10000), Math.floor(Math.random() * 10000), \"string\"];\r",
+                  "const namebase = [\"Pet\" + Math.floor(Math.random() * 10000),\"Pet\" + Math.floor(Math.random() * 10000), 1501];\r",
+                  "const statusbase = [\"available\", \"pending\", \"sold\", \"error\", 1];\r",
+                  "\r",
+                  "const indiceIdRNG = Math.floor(Math.random() * idbase.length);\r",
+                  "const indiceNameRNG = Math.floor(Math.random() * namebase.length);\r",
+                  "const indiceStatusRNG = Math.floor(Math.random() * statusbase.length);\r",
+                  "\r",
+                  "\r",
+                  "const meuBody ={\r",
+                  "    \"id\": idbase[indiceIdRNG],\r",
+                  "    \"name\": namebase[indiceNameRNG],\r",
+                  "    \"status\": statusbase[indiceStatusRNG]\r",
+                  "}\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"meuBody\", JSON.stringify(meuBody));\r",
+                  "pm.collectionVariables.set(\"petId\", idbase[indiceIdRNG]);"
+                ],
+                "_lastExecutionId": "3ec7ec99-9fd0-4b6f-98b0-782bf9f984c1"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "v2",
+              "pet"
+            ],
+            "host": [
+              "petstore",
+              "swagger",
+              "io"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "system": true
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "e3d24fcb-f6d1-4a95-9c9d-ddd2aa363578",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "petstore.swagger.io",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 50,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\"id\":\"string\",\"name\":\"Pet195\",\"status\":\"pending\"}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "d42e7177-f914-451d-bb1f-33d0e86b982e",
+          "status": "Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Date",
+              "value": "Sat, 11 Jul 2026 19:15:29 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "GET, POST, DELETE, PUT"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "Content-Type, api_key, Authorization"
+            },
+            {
+              "key": "Server",
+              "value": "Jetty(9.2.9.v20150224)"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              53,
+              48,
+              48,
+              44,
+              34,
+              116,
+              121,
+              112,
+              101,
+              34,
+              58,
+              34,
+              117,
+              110,
+              107,
+              110,
+              111,
+              119,
+              110,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              115,
+              111,
+              109,
+              101,
+              116,
+              104,
+              105,
+              110,
+              103,
+              32,
+              98,
+              97,
+              100,
+              32,
+              104,
+              97,
+              112,
+              112,
+              101,
+              110,
+              101,
+              100,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 701,
+          "responseSize": 64
+        },
+        "id": "ee1bf507-c4ec-42ae-87e8-10b3f88dd57c",
+        "assertions": [
+          {
+            "assertion": "Post status 500 - Id como string",
+            "skipped": false,
+            "error": {
+              "name": "TypeError",
+              "index": 0,
+              "test": "Post status 500 - Id como string",
+              "message": "Cannot read properties of undefined (reading 'setNextRequest')",
+              "stack": "TypeError: Cannot read properties of undefined (reading 'setNextRequest')\n   at Object.eval sandbox-script.js:1:1)"
+            }
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "249b0197-40ed-439e-8a5e-60db390d8370",
+          "length": 4,
+          "cycles": 1,
+          "position": 1,
+          "iteration": 0,
+          "httpRequestId": "881c31f2-378b-4629-b85a-ffb7b1e4b671"
+        },
+        "item": {
+          "id": "a7f4dc0a-6b74-408c-a97b-38bbab2cf57a",
+          "name": "REQ-02",
+          "request": {
+            "url": {
+              "path": [
+                "{{versao}}",
+                "pet",
+                "{{petIdGet}}"
+              ],
+              "host": [
+                "{{basePetURL}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "04e9b4eb-3526-4caf-a838-033a4bdedd28",
+                "type": "text/javascript",
+                "exec": [
+                  "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                  "\r",
+                  "const idRNG = meuBody.id;\r",
+                  "const nameRNG = meuBody.name;\r",
+                  "const statusRNG = meuBody.status;\r",
+                  "\r",
+                  "const resposta = pm.response.json();\r",
+                  "\r",
+                  "console.log(resposta);\r",
+                  "\r",
+                  "const caminhofeliz = (resposta &&\r",
+                  "    resposta.id === idRNG &&\r",
+                  "    resposta.name === nameRNG &&\r",
+                  "    resposta.status === statusRNG);\r",
+                  "\r",
+                  "if (caminhofeliz) {\r",
+                  "    pm.test(\"Get status 200 - Dados iguais com o Post\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "\r",
+                  "    if (pm.response.code === 200) {\r",
+                  "        pm.test(\"Resposta do Get com id e tipo do id corretos\", function () {\r",
+                  "            pm.expect(resposta.id).to.be.a('number');\r",
+                  "            pm.expect(resposta.id).to.eql(idRNG);\r",
+                  "        });\r",
+                  "        pm.test(\"Resposta do Get com name e tipo do name corretos\", function () {\r",
+                  "            pm.expect(resposta.name).to.be.a('string');\r",
+                  "            pm.expect(resposta.name).to.eql(nameRNG);\r",
+                  "        });\r",
+                  "        pm.test(\"Resposta do Get com status e tipo do status corretos\", function () {\r",
+                  "            pm.expect(resposta.status).to.be.a('string');\r",
+                  "            pm.expect(resposta.status).to.eql(statusRNG);\r",
+                  "        });\r",
+                  "    }\r",
+                  "} else {\r",
+                  "    pm.test(\"Get status 200 com Dados diferentes do post\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "}"
+                ],
+                "_lastExecutionId": "45cab361-2db1-445d-b2e5-5788a0d66459"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "12e5765d-0e51-4e88-bd2e-25a794b51b83",
+                "type": "text/javascript",
+                "exec": [
+                  "const idarraytest = [2, pm.collectionVariables.get(\"petId\")];\r",
+                  "\r",
+                  "const idRNG = Math.floor(Math.random() * idarraytest.length);\r",
+                  "const petIdGet = idarraytest[idRNG];\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"petIdGet\", petIdGet);"
+                ],
+                "_lastExecutionId": "8aea8f6a-a79d-4b23-8b05-3732f2fb364b"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "v2",
+              "pet",
+              "2"
+            ],
+            "host": [
+              "petstore",
+              "swagger",
+              "io"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "326a2ec2-f39b-41f9-a984-b75cfbc77494",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "petstore.swagger.io",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "cf21d95d-0de3-4273-b337-92c80b277a4d",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Date",
+              "value": "Sat, 11 Jul 2026 19:15:29 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "GET, POST, DELETE, PUT"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "Content-Type, api_key, Authorization"
+            },
+            {
+              "key": "Server",
+              "value": "Jetty(9.2.9.v20150224)"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              50,
+              44,
+              34,
+              99,
+              97,
+              116,
+              101,
+              103,
+              111,
+              114,
+              121,
+              34,
+              58,
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              48,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              100,
+              111,
+              103,
+              34,
+              125,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              84,
+              111,
+              109,
+              34,
+              44,
+              34,
+              112,
+              104,
+              111,
+              116,
+              111,
+              85,
+              114,
+              108,
+              115,
+              34,
+              58,
+              91,
+              34,
+              115,
+              116,
+              114,
+              105,
+              110,
+              103,
+              34,
+              93,
+              44,
+              34,
+              116,
+              97,
+              103,
+              115,
+              34,
+              58,
+              91,
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              48,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              115,
+              116,
+              114,
+              105,
+              110,
+              103,
+              34,
+              125,
+              93,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              34,
+              58,
+              34,
+              97,
+              118,
+              97,
+              105,
+              108,
+              97,
+              98,
+              108,
+              101,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 154,
+          "responseSize": 132
+        },
+        "id": "a7f4dc0a-6b74-408c-a97b-38bbab2cf57a",
+        "assertions": [
+          {
+            "assertion": "Get status 200 com Dados diferentes do post",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "14514841-62a1-495d-8102-f50b99bb7aae",
+          "length": 4,
+          "cycles": 1,
+          "position": 2,
+          "iteration": 0,
+          "httpRequestId": "5fc9ebf7-46d1-4778-9333-1e3fd1fa4851"
+        },
+        "item": {
+          "id": "bef3e8ef-90c0-482a-837e-9919e5691cd7",
+          "name": "REQ-03",
+          "request": {
+            "url": {
+              "path": [
+                "{{versao}}",
+                "pet",
+                "{{petIdGet2}}"
+              ],
+              "host": [
+                "{{basePetURL}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "130fc973-47fe-414a-9d3a-ed260dcb543f",
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "if (!response.id) {\r",
+                  "    pm.test(\"Get em pet inexistente\", function () {\r",
+                  "        pm.response.to.have.status(404);\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"Get em pet existente\", function(){\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "}\r",
+                  "\r",
+                  "const petId = pm.collectionVariables.get(\"petId\");\r",
+                  "\r",
+                  "if (typeof petId != 'number') {\r",
+                  "    pm.execution.setNextRequest(null);\r",
+                  "}"
+                ],
+                "_lastExecutionId": "97b5ccec-8735-4687-bcb8-80e81f76aca3"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "14bf5fa3-2eae-435a-9959-82e8b68a1918",
+                "type": "text/javascript",
+                "exec": [
+                  "const arrayid = [2, 404];\r",
+                  "\r",
+                  "const indexRNG = Math.floor(Math.random() * arrayid.length);\r",
+                  "pm.collectionVariables.set(\"petIdGet2\", arrayid[indexRNG]);"
+                ],
+                "_lastExecutionId": "b3fe356c-6370-49d8-9bf9-d9cd164dc812"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "v2",
+              "pet",
+              "2"
+            ],
+            "host": [
+              "petstore",
+              "swagger",
+              "io"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "b23f130c-946e-440e-8645-4498fc3f02cb",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "petstore.swagger.io",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "bc461d62-d9cd-431b-98b8-ae1359e9a2be",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Date",
+              "value": "Sat, 11 Jul 2026 19:15:29 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "GET, POST, DELETE, PUT"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "Content-Type, api_key, Authorization"
+            },
+            {
+              "key": "Server",
+              "value": "Jetty(9.2.9.v20150224)"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              50,
+              44,
+              34,
+              99,
+              97,
+              116,
+              101,
+              103,
+              111,
+              114,
+              121,
+              34,
+              58,
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              48,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              100,
+              111,
+              103,
+              34,
+              125,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              84,
+              111,
+              109,
+              34,
+              44,
+              34,
+              112,
+              104,
+              111,
+              116,
+              111,
+              85,
+              114,
+              108,
+              115,
+              34,
+              58,
+              91,
+              34,
+              115,
+              116,
+              114,
+              105,
+              110,
+              103,
+              34,
+              93,
+              44,
+              34,
+              116,
+              97,
+              103,
+              115,
+              34,
+              58,
+              91,
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              48,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              115,
+              116,
+              114,
+              105,
+              110,
+              103,
+              34,
+              125,
+              93,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              34,
+              58,
+              34,
+              97,
+              118,
+              97,
+              105,
+              108,
+              97,
+              98,
+              108,
+              101,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 152,
+          "responseSize": 132
+        },
+        "id": "bef3e8ef-90c0-482a-837e-9919e5691cd7",
+        "assertions": [
+          {
+            "assertion": "Get em pet existente",
+            "skipped": false
+          }
+        ],
+        "testScript": [
+          {
+            "error": {
+              "type": "Error",
+              "name": "TypeError",
+              "message": "Cannot read properties of undefined (reading 'setNextRequest')",
+              "checksum": "3e78a949281265eb316d67fb90d10174",
+              "id": "0958880b-d5bd-464e-8601-b0f74b2478e0",
+              "timestamp": 1783797329270,
+              "stacktrace": []
+            }
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "7a3b1d1a-dded-48f0-b01e-a725dde3c65a",
+          "length": 4,
+          "cycles": 1,
+          "position": 3,
+          "iteration": 0,
+          "httpRequestId": "b617f6cb-dab8-4361-b670-22137077275f"
+        },
+        "item": {
+          "id": "1168afda-0f47-423a-89be-ec158e7e94a8",
+          "name": "REQ-04",
+          "request": {
+            "url": {
+              "path": [
+                "{{versao}}",
+                "pet",
+                "{{petIdDelete}}"
+              ],
+              "host": [
+                "{{basePetURL}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "DELETE"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "b0c46ea1-3871-492e-82e0-37bc65196101",
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get(\"InteraDel\") == 0) {\r",
+                  "    pm.test(\"Status code 200 - Pet deletado\", function () {\r",
+                  "        pm.collectionVariables.set(\"InteraDel\", 1);\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "        pm.execution.setNextRequest(\"REQ-04\");\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"Status code is 404\", function () {\r",
+                  "        pm.response.to.have.status(404);\r",
+                  "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                  "    });\r",
+                  "}"
+                ],
+                "_lastExecutionId": "188d55e7-d380-45b0-b12d-d44652607b61"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "d94596b0-c363-4567-aa26-9f34063d22f6",
+                "type": "text/javascript",
+                "exec": [
+                  "const myBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"petIdDelete\", myBody.id);"
+                ],
+                "_lastExecutionId": "6d38ae17-a52e-493f-b376-991cc9902144"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "v2",
+              "pet",
+              "string"
+            ],
+            "host": [
+              "petstore",
+              "swagger",
+              "io"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "83b10f97-af64-42af-bcc6-95b1a052fc0d",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "petstore.swagger.io",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "DELETE"
+        },
+        "response": {
+          "id": "e9960380-ff19-42f3-a0c2-845f2e5f4aa6",
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Date",
+              "value": "Sat, 11 Jul 2026 19:15:30 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "GET, POST, DELETE, PUT"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "Content-Type, api_key, Authorization"
+            },
+            {
+              "key": "Server",
+              "value": "Jetty(9.2.9.v20150224)"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              52,
+              44,
+              34,
+              116,
+              121,
+              112,
+              101,
+              34,
+              58,
+              34,
+              117,
+              110,
+              107,
+              110,
+              111,
+              119,
+              110,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              106,
+              97,
+              118,
+              97,
+              46,
+              108,
+              97,
+              110,
+              103,
+              46,
+              78,
+              117,
+              109,
+              98,
+              101,
+              114,
+              70,
+              111,
+              114,
+              109,
+              97,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              58,
+              32,
+              70,
+              111,
+              114,
+              32,
+              105,
+              110,
+              112,
+              117,
+              116,
+              32,
+              115,
+              116,
+              114,
+              105,
+              110,
+              103,
+              58,
+              32,
+              92,
+              34,
+              115,
+              116,
+              114,
+              105,
+              110,
+              103,
+              92,
+              34,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 156,
+          "responseSize": 103
+        },
+        "id": "1168afda-0f47-423a-89be-ec158e7e94a8",
+        "assertions": [
+          {
+            "assertion": "Status code 200 - Pet deletado",
+            "skipped": false,
+            "error": {
+              "name": "AssertionError",
+              "index": 0,
+              "test": "Status code 200 - Pet deletado",
+              "message": "expected response to have status code 200 but got 404",
+              "stack": "AssertionError: expected response to have status code 200 but got 404\n   at Object.eval sandbox-script.js:1:4)"
+            }
+          }
+        ]
+      }
+    ],
+    "transfers": {
+      "responseTotal": 431
+    },
+    "failures": [
+      {
+        "error": {
+          "name": "TypeError",
+          "index": 0,
+          "test": "Post status 500 - Id como string",
+          "message": "Cannot read properties of undefined (reading 'setNextRequest')",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'setNextRequest')\n   at Object.eval sandbox-script.js:1:1)",
+          "checksum": "ed9f85a540b22c1985dc18faaee95dea",
+          "id": "117461c6-36c0-4198-a6ca-c68f9cd33430",
+          "timestamp": 1783797328748,
+          "stacktrace": [
+            {
+              "fileName": "sandbox-script.js",
+              "lineNumber": 1,
+              "functionName": "Object.eval",
+              "typeName": "Object",
+              "methodName": "eval",
+              "columnNumber": 1,
+              "native": false
+            }
+          ]
+        },
+        "at": "assertion:0 in test-script",
+        "source": {
+          "id": "ee1bf507-c4ec-42ae-87e8-10b3f88dd57c",
+          "name": "REQ-01",
+          "request": {
+            "url": {
+              "path": [
+                "{{versao}}",
+                "pet"
+              ],
+              "host": [
+                "{{basePetURL}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{{meuBody}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2ed9e04f-2937-473a-9b27-4650b198f653",
+                "type": "text/javascript",
+                "exec": [
+                  "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                  "\r",
+                  "const idRNG = meuBody.id;\r",
+                  "const nameRNG = meuBody.name;\r",
+                  "const statusRNG = meuBody.status;\r",
+                  "\r",
+                  "console.log(meuBody);\r",
+                  "\r",
+                  "const caminhoFeliz =\r",
+                  "    (typeof idRNG == 'number') &&\r",
+                  "    (typeof nameRNG == 'string') &&\r",
+                  "    (typeof statusRNG == 'string') && [\"available\", \"pending\", \"sold\"].includes(statusRNG);\r",
+                  "\r",
+                  "if (caminhoFeliz) {\r",
+                  "    pm.test(\"Post status 200 - Body Corretos\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                  "    });\r",
+                  "} else if (typeof idRNG === 'string') {\r",
+                  "    pm.test(\"Post status 500 - Id como string\", function () {\r",
+                  "        pm.response.to.have.status(500);\r",
+                  "        pm.execution.setNextRequest(\"REQ-03\");\r",
+                  "    });\r",
+                  "}\r",
+                  "else {\r",
+                  "    pm.test(\"Post status 400 - Body Errado\", function () {\r",
+                  "        pm.response.to.have.status(400);\r",
+                  "    });\r",
+                  "}\r",
+                  "\r",
+                  "if (pm.response.code === 200) {\r",
+                  "    var resposta = pm.response.json();\r",
+                  "\r",
+                  "    pm.test(\"Body do Post com id e tipo do id corretos\", function () {\r",
+                  "        pm.expect(resposta.id).to.be.a('number');\r",
+                  "        pm.expect(resposta.id).to.eql(idRNG);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Body do Post com name e tipo name corretos\", function () {\r",
+                  "        pm.expect(resposta.name).to.be.a('string');\r",
+                  "        pm.expect(resposta.name).to.eql(nameRNG);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Body do Post com status e tipo do status corretos\", function () {\r",
+                  "        pm.expect(resposta.status).to.be.a('string');\r",
+                  "        pm.expect(resposta.status).to.eql(statusRNG);\r",
+                  "    });\r",
+                  "}"
+                ],
+                "_lastExecutionId": "e985ab94-700a-4614-95e0-9cf32d1dcc1e"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "5f68baf2-23e4-41d2-adde-a471fb7ecb34",
+                "type": "text/javascript",
+                "exec": [
+                  "const idbase = [Math.floor(Math.random() * 10000), Math.floor(Math.random() * 10000), \"string\"];\r",
+                  "const namebase = [\"Pet\" + Math.floor(Math.random() * 10000),\"Pet\" + Math.floor(Math.random() * 10000), 1501];\r",
+                  "const statusbase = [\"available\", \"pending\", \"sold\", \"error\", 1];\r",
+                  "\r",
+                  "const indiceIdRNG = Math.floor(Math.random() * idbase.length);\r",
+                  "const indiceNameRNG = Math.floor(Math.random() * namebase.length);\r",
+                  "const indiceStatusRNG = Math.floor(Math.random() * statusbase.length);\r",
+                  "\r",
+                  "\r",
+                  "const meuBody ={\r",
+                  "    \"id\": idbase[indiceIdRNG],\r",
+                  "    \"name\": namebase[indiceNameRNG],\r",
+                  "    \"status\": statusbase[indiceStatusRNG]\r",
+                  "}\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"meuBody\", JSON.stringify(meuBody));\r",
+                  "pm.collectionVariables.set(\"petId\", idbase[indiceIdRNG]);"
+                ],
+                "_lastExecutionId": "3ec7ec99-9fd0-4b6f-98b0-782bf9f984c1"
+              }
+            }
+          ]
+        },
+        "parent": {
+          "_": {
+            "postman_id": "3898335d-c05d-4356-baea-f779e46150a9",
+            "exporter_id": "50055106",
+            "collection_link": "https://go.postman.co/collection/50055106-3898335d-c05d-4356-baea-f779e46150a9?source=collection_link"
+          },
+          "item": [
+            {
+              "id": "ee1bf507-c4ec-42ae-87e8-10b3f88dd57c",
+              "name": "REQ-01",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{meuBody}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ed9e04f-2937-473a-9b27-4650b198f653",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                      "\r",
+                      "const idRNG = meuBody.id;\r",
+                      "const nameRNG = meuBody.name;\r",
+                      "const statusRNG = meuBody.status;\r",
+                      "\r",
+                      "console.log(meuBody);\r",
+                      "\r",
+                      "const caminhoFeliz =\r",
+                      "    (typeof idRNG == 'number') &&\r",
+                      "    (typeof nameRNG == 'string') &&\r",
+                      "    (typeof statusRNG == 'string') && [\"available\", \"pending\", \"sold\"].includes(statusRNG);\r",
+                      "\r",
+                      "if (caminhoFeliz) {\r",
+                      "    pm.test(\"Post status 200 - Body Corretos\", function () {\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                      "    });\r",
+                      "} else if (typeof idRNG === 'string') {\r",
+                      "    pm.test(\"Post status 500 - Id como string\", function () {\r",
+                      "        pm.response.to.have.status(500);\r",
+                      "        pm.execution.setNextRequest(\"REQ-03\");\r",
+                      "    });\r",
+                      "}\r",
+                      "else {\r",
+                      "    pm.test(\"Post status 400 - Body Errado\", function () {\r",
+                      "        pm.response.to.have.status(400);\r",
+                      "    });\r",
+                      "}\r",
+                      "\r",
+                      "if (pm.response.code === 200) {\r",
+                      "    var resposta = pm.response.json();\r",
+                      "\r",
+                      "    pm.test(\"Body do Post com id e tipo do id corretos\", function () {\r",
+                      "        pm.expect(resposta.id).to.be.a('number');\r",
+                      "        pm.expect(resposta.id).to.eql(idRNG);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"Body do Post com name e tipo name corretos\", function () {\r",
+                      "        pm.expect(resposta.name).to.be.a('string');\r",
+                      "        pm.expect(resposta.name).to.eql(nameRNG);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"Body do Post com status e tipo do status corretos\", function () {\r",
+                      "        pm.expect(resposta.status).to.be.a('string');\r",
+                      "        pm.expect(resposta.status).to.eql(statusRNG);\r",
+                      "    });\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "e985ab94-700a-4614-95e0-9cf32d1dcc1e"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "5f68baf2-23e4-41d2-adde-a471fb7ecb34",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const idbase = [Math.floor(Math.random() * 10000), Math.floor(Math.random() * 10000), \"string\"];\r",
+                      "const namebase = [\"Pet\" + Math.floor(Math.random() * 10000),\"Pet\" + Math.floor(Math.random() * 10000), 1501];\r",
+                      "const statusbase = [\"available\", \"pending\", \"sold\", \"error\", 1];\r",
+                      "\r",
+                      "const indiceIdRNG = Math.floor(Math.random() * idbase.length);\r",
+                      "const indiceNameRNG = Math.floor(Math.random() * namebase.length);\r",
+                      "const indiceStatusRNG = Math.floor(Math.random() * statusbase.length);\r",
+                      "\r",
+                      "\r",
+                      "const meuBody ={\r",
+                      "    \"id\": idbase[indiceIdRNG],\r",
+                      "    \"name\": namebase[indiceNameRNG],\r",
+                      "    \"status\": statusbase[indiceStatusRNG]\r",
+                      "}\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"meuBody\", JSON.stringify(meuBody));\r",
+                      "pm.collectionVariables.set(\"petId\", idbase[indiceIdRNG]);"
+                    ],
+                    "_lastExecutionId": "3ec7ec99-9fd0-4b6f-98b0-782bf9f984c1"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "a7f4dc0a-6b74-408c-a97b-38bbab2cf57a",
+              "name": "REQ-02",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet",
+                    "{{petIdGet}}"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "04e9b4eb-3526-4caf-a838-033a4bdedd28",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                      "\r",
+                      "const idRNG = meuBody.id;\r",
+                      "const nameRNG = meuBody.name;\r",
+                      "const statusRNG = meuBody.status;\r",
+                      "\r",
+                      "const resposta = pm.response.json();\r",
+                      "\r",
+                      "console.log(resposta);\r",
+                      "\r",
+                      "const caminhofeliz = (resposta &&\r",
+                      "    resposta.id === idRNG &&\r",
+                      "    resposta.name === nameRNG &&\r",
+                      "    resposta.status === statusRNG);\r",
+                      "\r",
+                      "if (caminhofeliz) {\r",
+                      "    pm.test(\"Get status 200 - Dados iguais com o Post\", function () {\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "    });\r",
+                      "\r",
+                      "    if (pm.response.code === 200) {\r",
+                      "        pm.test(\"Resposta do Get com id e tipo do id corretos\", function () {\r",
+                      "            pm.expect(resposta.id).to.be.a('number');\r",
+                      "            pm.expect(resposta.id).to.eql(idRNG);\r",
+                      "        });\r",
+                      "        pm.test(\"Resposta do Get com name e tipo do name corretos\", function () {\r",
+                      "            pm.expect(resposta.name).to.be.a('string');\r",
+                      "            pm.expect(resposta.name).to.eql(nameRNG);\r",
+                      "        });\r",
+                      "        pm.test(\"Resposta do Get com status e tipo do status corretos\", function () {\r",
+                      "            pm.expect(resposta.status).to.be.a('string');\r",
+                      "            pm.expect(resposta.status).to.eql(statusRNG);\r",
+                      "        });\r",
+                      "    }\r",
+                      "} else {\r",
+                      "    pm.test(\"Get status 200 com Dados diferentes do post\", function () {\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "    });\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "45cab361-2db1-445d-b2e5-5788a0d66459"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "12e5765d-0e51-4e88-bd2e-25a794b51b83",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const idarraytest = [2, pm.collectionVariables.get(\"petId\")];\r",
+                      "\r",
+                      "const idRNG = Math.floor(Math.random() * idarraytest.length);\r",
+                      "const petIdGet = idarraytest[idRNG];\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"petIdGet\", petIdGet);"
+                    ],
+                    "_lastExecutionId": "8aea8f6a-a79d-4b23-8b05-3732f2fb364b"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "bef3e8ef-90c0-482a-837e-9919e5691cd7",
+              "name": "REQ-03",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet",
+                    "{{petIdGet2}}"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "130fc973-47fe-414a-9d3a-ed260dcb543f",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json();\r",
+                      "\r",
+                      "if (!response.id) {\r",
+                      "    pm.test(\"Get em pet inexistente\", function () {\r",
+                      "        pm.response.to.have.status(404);\r",
+                      "    });\r",
+                      "} else {\r",
+                      "    pm.test(\"Get em pet existente\", function(){\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "    });\r",
+                      "}\r",
+                      "\r",
+                      "const petId = pm.collectionVariables.get(\"petId\");\r",
+                      "\r",
+                      "if (typeof petId != 'number') {\r",
+                      "    pm.execution.setNextRequest(null);\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "97b5ccec-8735-4687-bcb8-80e81f76aca3"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "14bf5fa3-2eae-435a-9959-82e8b68a1918",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const arrayid = [2, 404];\r",
+                      "\r",
+                      "const indexRNG = Math.floor(Math.random() * arrayid.length);\r",
+                      "pm.collectionVariables.set(\"petIdGet2\", arrayid[indexRNG]);"
+                    ],
+                    "_lastExecutionId": "b3fe356c-6370-49d8-9bf9-d9cd164dc812"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "1168afda-0f47-423a-89be-ec158e7e94a8",
+              "name": "REQ-04",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet",
+                    "{{petIdDelete}}"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "DELETE"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "b0c46ea1-3871-492e-82e0-37bc65196101",
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.collectionVariables.get(\"InteraDel\") == 0) {\r",
+                      "    pm.test(\"Status code 200 - Pet deletado\", function () {\r",
+                      "        pm.collectionVariables.set(\"InteraDel\", 1);\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "        pm.execution.setNextRequest(\"REQ-04\");\r",
+                      "    });\r",
+                      "} else {\r",
+                      "    pm.test(\"Status code is 404\", function () {\r",
+                      "        pm.response.to.have.status(404);\r",
+                      "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                      "    });\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "188d55e7-d380-45b0-b12d-d44652607b61"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "d94596b0-c363-4567-aa26-9f34063d22f6",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const myBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"petIdDelete\", myBody.id);"
+                    ],
+                    "_lastExecutionId": "6d38ae17-a52e-493f-b376-991cc9902144"
+                  }
+                }
+              ]
+            }
+          ],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "ddb43592-4386-4848-acd6-1682d1b40caf",
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ],
+                "_lastExecutionId": "71b55f49-0f48-4940-8fc9-f32673ff83df"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "fc1c9437-9733-4476-9f6e-12d8625e2f10",
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ],
+                "_lastExecutionId": "d29ccbb3-891a-45f5-b1be-cc031c485e42"
+              }
+            }
+          ],
+          "variable": [
+            {
+              "type": "any",
+              "value": "",
+              "key": "meuBody"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petId"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petIdGet"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petIdGet2"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petIdDelete"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "InteraDel"
+            }
+          ],
+          "info": {
+            "_postman_id": "3898335d-c05d-4356-baea-f779e46150a9",
+            "name": "TestePhoebus",
+            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+          }
+        },
+        "cursor": {
+          "position": 0,
+          "iteration": 0,
+          "length": 4,
+          "cycles": 1,
+          "empty": false,
+          "eof": false,
+          "bof": true,
+          "cr": false,
+          "ref": "397f3521-5cf9-4d59-b39b-24164722111a",
+          "httpRequestId": "52644bac-8b1c-4d95-be95-c4a1a844cf04",
+          "scriptId": "2ed9e04f-2937-473a-9b27-4650b198f653",
+          "execution": "e985ab94-700a-4614-95e0-9cf32d1dcc1e"
+        }
+      },
+      {
+        "error": {
+          "type": "Error",
+          "name": "TypeError",
+          "message": "Cannot read properties of undefined (reading 'setNextRequest')",
+          "checksum": "3e78a949281265eb316d67fb90d10174",
+          "id": "0958880b-d5bd-464e-8601-b0f74b2478e0",
+          "timestamp": 1783797329270,
+          "stacktrace": []
+        },
+        "at": "test-script",
+        "source": {
+          "id": "bef3e8ef-90c0-482a-837e-9919e5691cd7",
+          "name": "REQ-03",
+          "request": {
+            "url": {
+              "path": [
+                "{{versao}}",
+                "pet",
+                "{{petIdGet2}}"
+              ],
+              "host": [
+                "{{basePetURL}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "130fc973-47fe-414a-9d3a-ed260dcb543f",
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "if (!response.id) {\r",
+                  "    pm.test(\"Get em pet inexistente\", function () {\r",
+                  "        pm.response.to.have.status(404);\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"Get em pet existente\", function(){\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "}\r",
+                  "\r",
+                  "const petId = pm.collectionVariables.get(\"petId\");\r",
+                  "\r",
+                  "if (typeof petId != 'number') {\r",
+                  "    pm.execution.setNextRequest(null);\r",
+                  "}"
+                ],
+                "_lastExecutionId": "97b5ccec-8735-4687-bcb8-80e81f76aca3"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "14bf5fa3-2eae-435a-9959-82e8b68a1918",
+                "type": "text/javascript",
+                "exec": [
+                  "const arrayid = [2, 404];\r",
+                  "\r",
+                  "const indexRNG = Math.floor(Math.random() * arrayid.length);\r",
+                  "pm.collectionVariables.set(\"petIdGet2\", arrayid[indexRNG]);"
+                ],
+                "_lastExecutionId": "b3fe356c-6370-49d8-9bf9-d9cd164dc812"
+              }
+            }
+          ]
+        },
+        "parent": {
+          "_": {
+            "postman_id": "3898335d-c05d-4356-baea-f779e46150a9",
+            "exporter_id": "50055106",
+            "collection_link": "https://go.postman.co/collection/50055106-3898335d-c05d-4356-baea-f779e46150a9?source=collection_link"
+          },
+          "item": [
+            {
+              "id": "ee1bf507-c4ec-42ae-87e8-10b3f88dd57c",
+              "name": "REQ-01",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{meuBody}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ed9e04f-2937-473a-9b27-4650b198f653",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                      "\r",
+                      "const idRNG = meuBody.id;\r",
+                      "const nameRNG = meuBody.name;\r",
+                      "const statusRNG = meuBody.status;\r",
+                      "\r",
+                      "console.log(meuBody);\r",
+                      "\r",
+                      "const caminhoFeliz =\r",
+                      "    (typeof idRNG == 'number') &&\r",
+                      "    (typeof nameRNG == 'string') &&\r",
+                      "    (typeof statusRNG == 'string') && [\"available\", \"pending\", \"sold\"].includes(statusRNG);\r",
+                      "\r",
+                      "if (caminhoFeliz) {\r",
+                      "    pm.test(\"Post status 200 - Body Corretos\", function () {\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                      "    });\r",
+                      "} else if (typeof idRNG === 'string') {\r",
+                      "    pm.test(\"Post status 500 - Id como string\", function () {\r",
+                      "        pm.response.to.have.status(500);\r",
+                      "        pm.execution.setNextRequest(\"REQ-03\");\r",
+                      "    });\r",
+                      "}\r",
+                      "else {\r",
+                      "    pm.test(\"Post status 400 - Body Errado\", function () {\r",
+                      "        pm.response.to.have.status(400);\r",
+                      "    });\r",
+                      "}\r",
+                      "\r",
+                      "if (pm.response.code === 200) {\r",
+                      "    var resposta = pm.response.json();\r",
+                      "\r",
+                      "    pm.test(\"Body do Post com id e tipo do id corretos\", function () {\r",
+                      "        pm.expect(resposta.id).to.be.a('number');\r",
+                      "        pm.expect(resposta.id).to.eql(idRNG);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"Body do Post com name e tipo name corretos\", function () {\r",
+                      "        pm.expect(resposta.name).to.be.a('string');\r",
+                      "        pm.expect(resposta.name).to.eql(nameRNG);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"Body do Post com status e tipo do status corretos\", function () {\r",
+                      "        pm.expect(resposta.status).to.be.a('string');\r",
+                      "        pm.expect(resposta.status).to.eql(statusRNG);\r",
+                      "    });\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "e985ab94-700a-4614-95e0-9cf32d1dcc1e"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "5f68baf2-23e4-41d2-adde-a471fb7ecb34",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const idbase = [Math.floor(Math.random() * 10000), Math.floor(Math.random() * 10000), \"string\"];\r",
+                      "const namebase = [\"Pet\" + Math.floor(Math.random() * 10000),\"Pet\" + Math.floor(Math.random() * 10000), 1501];\r",
+                      "const statusbase = [\"available\", \"pending\", \"sold\", \"error\", 1];\r",
+                      "\r",
+                      "const indiceIdRNG = Math.floor(Math.random() * idbase.length);\r",
+                      "const indiceNameRNG = Math.floor(Math.random() * namebase.length);\r",
+                      "const indiceStatusRNG = Math.floor(Math.random() * statusbase.length);\r",
+                      "\r",
+                      "\r",
+                      "const meuBody ={\r",
+                      "    \"id\": idbase[indiceIdRNG],\r",
+                      "    \"name\": namebase[indiceNameRNG],\r",
+                      "    \"status\": statusbase[indiceStatusRNG]\r",
+                      "}\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"meuBody\", JSON.stringify(meuBody));\r",
+                      "pm.collectionVariables.set(\"petId\", idbase[indiceIdRNG]);"
+                    ],
+                    "_lastExecutionId": "3ec7ec99-9fd0-4b6f-98b0-782bf9f984c1"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "a7f4dc0a-6b74-408c-a97b-38bbab2cf57a",
+              "name": "REQ-02",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet",
+                    "{{petIdGet}}"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "04e9b4eb-3526-4caf-a838-033a4bdedd28",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                      "\r",
+                      "const idRNG = meuBody.id;\r",
+                      "const nameRNG = meuBody.name;\r",
+                      "const statusRNG = meuBody.status;\r",
+                      "\r",
+                      "const resposta = pm.response.json();\r",
+                      "\r",
+                      "console.log(resposta);\r",
+                      "\r",
+                      "const caminhofeliz = (resposta &&\r",
+                      "    resposta.id === idRNG &&\r",
+                      "    resposta.name === nameRNG &&\r",
+                      "    resposta.status === statusRNG);\r",
+                      "\r",
+                      "if (caminhofeliz) {\r",
+                      "    pm.test(\"Get status 200 - Dados iguais com o Post\", function () {\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "    });\r",
+                      "\r",
+                      "    if (pm.response.code === 200) {\r",
+                      "        pm.test(\"Resposta do Get com id e tipo do id corretos\", function () {\r",
+                      "            pm.expect(resposta.id).to.be.a('number');\r",
+                      "            pm.expect(resposta.id).to.eql(idRNG);\r",
+                      "        });\r",
+                      "        pm.test(\"Resposta do Get com name e tipo do name corretos\", function () {\r",
+                      "            pm.expect(resposta.name).to.be.a('string');\r",
+                      "            pm.expect(resposta.name).to.eql(nameRNG);\r",
+                      "        });\r",
+                      "        pm.test(\"Resposta do Get com status e tipo do status corretos\", function () {\r",
+                      "            pm.expect(resposta.status).to.be.a('string');\r",
+                      "            pm.expect(resposta.status).to.eql(statusRNG);\r",
+                      "        });\r",
+                      "    }\r",
+                      "} else {\r",
+                      "    pm.test(\"Get status 200 com Dados diferentes do post\", function () {\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "    });\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "45cab361-2db1-445d-b2e5-5788a0d66459"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "12e5765d-0e51-4e88-bd2e-25a794b51b83",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const idarraytest = [2, pm.collectionVariables.get(\"petId\")];\r",
+                      "\r",
+                      "const idRNG = Math.floor(Math.random() * idarraytest.length);\r",
+                      "const petIdGet = idarraytest[idRNG];\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"petIdGet\", petIdGet);"
+                    ],
+                    "_lastExecutionId": "8aea8f6a-a79d-4b23-8b05-3732f2fb364b"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "bef3e8ef-90c0-482a-837e-9919e5691cd7",
+              "name": "REQ-03",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet",
+                    "{{petIdGet2}}"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "130fc973-47fe-414a-9d3a-ed260dcb543f",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json();\r",
+                      "\r",
+                      "if (!response.id) {\r",
+                      "    pm.test(\"Get em pet inexistente\", function () {\r",
+                      "        pm.response.to.have.status(404);\r",
+                      "    });\r",
+                      "} else {\r",
+                      "    pm.test(\"Get em pet existente\", function(){\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "    });\r",
+                      "}\r",
+                      "\r",
+                      "const petId = pm.collectionVariables.get(\"petId\");\r",
+                      "\r",
+                      "if (typeof petId != 'number') {\r",
+                      "    pm.execution.setNextRequest(null);\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "97b5ccec-8735-4687-bcb8-80e81f76aca3"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "14bf5fa3-2eae-435a-9959-82e8b68a1918",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const arrayid = [2, 404];\r",
+                      "\r",
+                      "const indexRNG = Math.floor(Math.random() * arrayid.length);\r",
+                      "pm.collectionVariables.set(\"petIdGet2\", arrayid[indexRNG]);"
+                    ],
+                    "_lastExecutionId": "b3fe356c-6370-49d8-9bf9-d9cd164dc812"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "1168afda-0f47-423a-89be-ec158e7e94a8",
+              "name": "REQ-04",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet",
+                    "{{petIdDelete}}"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "DELETE"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "b0c46ea1-3871-492e-82e0-37bc65196101",
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.collectionVariables.get(\"InteraDel\") == 0) {\r",
+                      "    pm.test(\"Status code 200 - Pet deletado\", function () {\r",
+                      "        pm.collectionVariables.set(\"InteraDel\", 1);\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "        pm.execution.setNextRequest(\"REQ-04\");\r",
+                      "    });\r",
+                      "} else {\r",
+                      "    pm.test(\"Status code is 404\", function () {\r",
+                      "        pm.response.to.have.status(404);\r",
+                      "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                      "    });\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "188d55e7-d380-45b0-b12d-d44652607b61"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "d94596b0-c363-4567-aa26-9f34063d22f6",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const myBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"petIdDelete\", myBody.id);"
+                    ],
+                    "_lastExecutionId": "6d38ae17-a52e-493f-b376-991cc9902144"
+                  }
+                }
+              ]
+            }
+          ],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "ddb43592-4386-4848-acd6-1682d1b40caf",
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ],
+                "_lastExecutionId": "71b55f49-0f48-4940-8fc9-f32673ff83df"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "fc1c9437-9733-4476-9f6e-12d8625e2f10",
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ],
+                "_lastExecutionId": "d29ccbb3-891a-45f5-b1be-cc031c485e42"
+              }
+            }
+          ],
+          "variable": [
+            {
+              "type": "any",
+              "value": "",
+              "key": "meuBody"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petId"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petIdGet"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petIdGet2"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petIdDelete"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "InteraDel"
+            }
+          ],
+          "info": {
+            "_postman_id": "3898335d-c05d-4356-baea-f779e46150a9",
+            "name": "TestePhoebus",
+            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+          }
+        },
+        "cursor": {
+          "ref": "14514841-62a1-495d-8102-f50b99bb7aae",
+          "length": 4,
+          "cycles": 1,
+          "position": 2,
+          "iteration": 0,
+          "httpRequestId": "5fc9ebf7-46d1-4778-9333-1e3fd1fa4851",
+          "scriptId": "130fc973-47fe-414a-9d3a-ed260dcb543f"
+        }
+      },
+      {
+        "error": {
+          "name": "AssertionError",
+          "index": 0,
+          "test": "Status code 200 - Pet deletado",
+          "message": "expected response to have status code 200 but got 404",
+          "stack": "AssertionError: expected response to have status code 200 but got 404\n   at Object.eval sandbox-script.js:1:4)",
+          "checksum": "e0724c23ab96a9968bd6edb34b4ccfb0",
+          "id": "9a0c46d8-a527-467b-a888-887731a45e0d",
+          "timestamp": 1783797329520,
+          "stacktrace": [
+            {
+              "fileName": "sandbox-script.js",
+              "lineNumber": 1,
+              "functionName": "Object.eval",
+              "typeName": "Object",
+              "methodName": "eval",
+              "columnNumber": 4,
+              "native": false
+            }
+          ]
+        },
+        "at": "assertion:0 in test-script",
+        "source": {
+          "id": "1168afda-0f47-423a-89be-ec158e7e94a8",
+          "name": "REQ-04",
+          "request": {
+            "url": {
+              "path": [
+                "{{versao}}",
+                "pet",
+                "{{petIdDelete}}"
+              ],
+              "host": [
+                "{{basePetURL}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "DELETE"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "b0c46ea1-3871-492e-82e0-37bc65196101",
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get(\"InteraDel\") == 0) {\r",
+                  "    pm.test(\"Status code 200 - Pet deletado\", function () {\r",
+                  "        pm.collectionVariables.set(\"InteraDel\", 1);\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "        pm.execution.setNextRequest(\"REQ-04\");\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"Status code is 404\", function () {\r",
+                  "        pm.response.to.have.status(404);\r",
+                  "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                  "    });\r",
+                  "}"
+                ],
+                "_lastExecutionId": "188d55e7-d380-45b0-b12d-d44652607b61"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "d94596b0-c363-4567-aa26-9f34063d22f6",
+                "type": "text/javascript",
+                "exec": [
+                  "const myBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"petIdDelete\", myBody.id);"
+                ],
+                "_lastExecutionId": "6d38ae17-a52e-493f-b376-991cc9902144"
+              }
+            }
+          ]
+        },
+        "parent": {
+          "_": {
+            "postman_id": "3898335d-c05d-4356-baea-f779e46150a9",
+            "exporter_id": "50055106",
+            "collection_link": "https://go.postman.co/collection/50055106-3898335d-c05d-4356-baea-f779e46150a9?source=collection_link"
+          },
+          "item": [
+            {
+              "id": "ee1bf507-c4ec-42ae-87e8-10b3f88dd57c",
+              "name": "REQ-01",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{meuBody}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ed9e04f-2937-473a-9b27-4650b198f653",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                      "\r",
+                      "const idRNG = meuBody.id;\r",
+                      "const nameRNG = meuBody.name;\r",
+                      "const statusRNG = meuBody.status;\r",
+                      "\r",
+                      "console.log(meuBody);\r",
+                      "\r",
+                      "const caminhoFeliz =\r",
+                      "    (typeof idRNG == 'number') &&\r",
+                      "    (typeof nameRNG == 'string') &&\r",
+                      "    (typeof statusRNG == 'string') && [\"available\", \"pending\", \"sold\"].includes(statusRNG);\r",
+                      "\r",
+                      "if (caminhoFeliz) {\r",
+                      "    pm.test(\"Post status 200 - Body Corretos\", function () {\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                      "    });\r",
+                      "} else if (typeof idRNG === 'string') {\r",
+                      "    pm.test(\"Post status 500 - Id como string\", function () {\r",
+                      "        pm.response.to.have.status(500);\r",
+                      "        pm.execution.setNextRequest(\"REQ-03\");\r",
+                      "    });\r",
+                      "}\r",
+                      "else {\r",
+                      "    pm.test(\"Post status 400 - Body Errado\", function () {\r",
+                      "        pm.response.to.have.status(400);\r",
+                      "    });\r",
+                      "}\r",
+                      "\r",
+                      "if (pm.response.code === 200) {\r",
+                      "    var resposta = pm.response.json();\r",
+                      "\r",
+                      "    pm.test(\"Body do Post com id e tipo do id corretos\", function () {\r",
+                      "        pm.expect(resposta.id).to.be.a('number');\r",
+                      "        pm.expect(resposta.id).to.eql(idRNG);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"Body do Post com name e tipo name corretos\", function () {\r",
+                      "        pm.expect(resposta.name).to.be.a('string');\r",
+                      "        pm.expect(resposta.name).to.eql(nameRNG);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"Body do Post com status e tipo do status corretos\", function () {\r",
+                      "        pm.expect(resposta.status).to.be.a('string');\r",
+                      "        pm.expect(resposta.status).to.eql(statusRNG);\r",
+                      "    });\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "e985ab94-700a-4614-95e0-9cf32d1dcc1e"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "5f68baf2-23e4-41d2-adde-a471fb7ecb34",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const idbase = [Math.floor(Math.random() * 10000), Math.floor(Math.random() * 10000), \"string\"];\r",
+                      "const namebase = [\"Pet\" + Math.floor(Math.random() * 10000),\"Pet\" + Math.floor(Math.random() * 10000), 1501];\r",
+                      "const statusbase = [\"available\", \"pending\", \"sold\", \"error\", 1];\r",
+                      "\r",
+                      "const indiceIdRNG = Math.floor(Math.random() * idbase.length);\r",
+                      "const indiceNameRNG = Math.floor(Math.random() * namebase.length);\r",
+                      "const indiceStatusRNG = Math.floor(Math.random() * statusbase.length);\r",
+                      "\r",
+                      "\r",
+                      "const meuBody ={\r",
+                      "    \"id\": idbase[indiceIdRNG],\r",
+                      "    \"name\": namebase[indiceNameRNG],\r",
+                      "    \"status\": statusbase[indiceStatusRNG]\r",
+                      "}\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"meuBody\", JSON.stringify(meuBody));\r",
+                      "pm.collectionVariables.set(\"petId\", idbase[indiceIdRNG]);"
+                    ],
+                    "_lastExecutionId": "3ec7ec99-9fd0-4b6f-98b0-782bf9f984c1"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "a7f4dc0a-6b74-408c-a97b-38bbab2cf57a",
+              "name": "REQ-02",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet",
+                    "{{petIdGet}}"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "04e9b4eb-3526-4caf-a838-033a4bdedd28",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const meuBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                      "\r",
+                      "const idRNG = meuBody.id;\r",
+                      "const nameRNG = meuBody.name;\r",
+                      "const statusRNG = meuBody.status;\r",
+                      "\r",
+                      "const resposta = pm.response.json();\r",
+                      "\r",
+                      "console.log(resposta);\r",
+                      "\r",
+                      "const caminhofeliz = (resposta &&\r",
+                      "    resposta.id === idRNG &&\r",
+                      "    resposta.name === nameRNG &&\r",
+                      "    resposta.status === statusRNG);\r",
+                      "\r",
+                      "if (caminhofeliz) {\r",
+                      "    pm.test(\"Get status 200 - Dados iguais com o Post\", function () {\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "    });\r",
+                      "\r",
+                      "    if (pm.response.code === 200) {\r",
+                      "        pm.test(\"Resposta do Get com id e tipo do id corretos\", function () {\r",
+                      "            pm.expect(resposta.id).to.be.a('number');\r",
+                      "            pm.expect(resposta.id).to.eql(idRNG);\r",
+                      "        });\r",
+                      "        pm.test(\"Resposta do Get com name e tipo do name corretos\", function () {\r",
+                      "            pm.expect(resposta.name).to.be.a('string');\r",
+                      "            pm.expect(resposta.name).to.eql(nameRNG);\r",
+                      "        });\r",
+                      "        pm.test(\"Resposta do Get com status e tipo do status corretos\", function () {\r",
+                      "            pm.expect(resposta.status).to.be.a('string');\r",
+                      "            pm.expect(resposta.status).to.eql(statusRNG);\r",
+                      "        });\r",
+                      "    }\r",
+                      "} else {\r",
+                      "    pm.test(\"Get status 200 com Dados diferentes do post\", function () {\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "    });\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "45cab361-2db1-445d-b2e5-5788a0d66459"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "12e5765d-0e51-4e88-bd2e-25a794b51b83",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const idarraytest = [2, pm.collectionVariables.get(\"petId\")];\r",
+                      "\r",
+                      "const idRNG = Math.floor(Math.random() * idarraytest.length);\r",
+                      "const petIdGet = idarraytest[idRNG];\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"petIdGet\", petIdGet);"
+                    ],
+                    "_lastExecutionId": "8aea8f6a-a79d-4b23-8b05-3732f2fb364b"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "bef3e8ef-90c0-482a-837e-9919e5691cd7",
+              "name": "REQ-03",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet",
+                    "{{petIdGet2}}"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "130fc973-47fe-414a-9d3a-ed260dcb543f",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json();\r",
+                      "\r",
+                      "if (!response.id) {\r",
+                      "    pm.test(\"Get em pet inexistente\", function () {\r",
+                      "        pm.response.to.have.status(404);\r",
+                      "    });\r",
+                      "} else {\r",
+                      "    pm.test(\"Get em pet existente\", function(){\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "    });\r",
+                      "}\r",
+                      "\r",
+                      "const petId = pm.collectionVariables.get(\"petId\");\r",
+                      "\r",
+                      "if (typeof petId != 'number') {\r",
+                      "    pm.execution.setNextRequest(null);\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "97b5ccec-8735-4687-bcb8-80e81f76aca3"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "14bf5fa3-2eae-435a-9959-82e8b68a1918",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const arrayid = [2, 404];\r",
+                      "\r",
+                      "const indexRNG = Math.floor(Math.random() * arrayid.length);\r",
+                      "pm.collectionVariables.set(\"petIdGet2\", arrayid[indexRNG]);"
+                    ],
+                    "_lastExecutionId": "b3fe356c-6370-49d8-9bf9-d9cd164dc812"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "1168afda-0f47-423a-89be-ec158e7e94a8",
+              "name": "REQ-04",
+              "request": {
+                "url": {
+                  "path": [
+                    "{{versao}}",
+                    "pet",
+                    "{{petIdDelete}}"
+                  ],
+                  "host": [
+                    "{{basePetURL}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "DELETE"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "b0c46ea1-3871-492e-82e0-37bc65196101",
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.collectionVariables.get(\"InteraDel\") == 0) {\r",
+                      "    pm.test(\"Status code 200 - Pet deletado\", function () {\r",
+                      "        pm.collectionVariables.set(\"InteraDel\", 1);\r",
+                      "        pm.response.to.have.status(200);\r",
+                      "        pm.execution.setNextRequest(\"REQ-04\");\r",
+                      "    });\r",
+                      "} else {\r",
+                      "    pm.test(\"Status code is 404\", function () {\r",
+                      "        pm.response.to.have.status(404);\r",
+                      "        pm.collectionVariables.set(\"InteraDel\", 0);\r",
+                      "    });\r",
+                      "}"
+                    ],
+                    "_lastExecutionId": "188d55e7-d380-45b0-b12d-d44652607b61"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "d94596b0-c363-4567-aa26-9f34063d22f6",
+                    "type": "text/javascript",
+                    "exec": [
+                      "const myBody = JSON.parse(pm.collectionVariables.get(\"meuBody\"));\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"petIdDelete\", myBody.id);"
+                    ],
+                    "_lastExecutionId": "6d38ae17-a52e-493f-b376-991cc9902144"
+                  }
+                }
+              ]
+            }
+          ],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "ddb43592-4386-4848-acd6-1682d1b40caf",
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ],
+                "_lastExecutionId": "71b55f49-0f48-4940-8fc9-f32673ff83df"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "fc1c9437-9733-4476-9f6e-12d8625e2f10",
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ],
+                "_lastExecutionId": "d29ccbb3-891a-45f5-b1be-cc031c485e42"
+              }
+            }
+          ],
+          "variable": [
+            {
+              "type": "any",
+              "value": "",
+              "key": "meuBody"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petId"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petIdGet"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petIdGet2"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "petIdDelete"
+            },
+            {
+              "type": "any",
+              "value": "",
+              "key": "InteraDel"
+            }
+          ],
+          "info": {
+            "_postman_id": "3898335d-c05d-4356-baea-f779e46150a9",
+            "name": "TestePhoebus",
+            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+          }
+        },
+        "cursor": {
+          "ref": "7a3b1d1a-dded-48f0-b01e-a725dde3c65a",
+          "length": 4,
+          "cycles": 1,
+          "position": 3,
+          "iteration": 0,
+          "httpRequestId": "b617f6cb-dab8-4361-b670-22137077275f",
+          "scriptId": "b0c46ea1-3871-492e-82e0-37bc65196101",
+          "execution": "188d55e7-d380-45b0-b12d-d44652607b61"
+        }
+      }
+    ],
+    "error": null
+  }
+}
