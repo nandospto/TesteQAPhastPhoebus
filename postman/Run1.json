@@ -1,0 +1,176 @@
+{
+	"id": "a4f0ffb3-25ff-457d-8bd2-7972f7427de4",
+	"name": "TestePhoebus",
+	"timestamp": "2026-07-11T19:43:19.591Z",
+	"collection_id": "50055106-3898335d-c05d-4356-baea-f779e46150a9",
+	"folder_id": 0,
+	"environment_id": "50055106-81aaec58-549c-4112-8db8-d0d53018c6a3",
+	"totalPass": 8,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-07-11T19:43:18.009Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "e04a6101-b8c9-4d4e-929a-c5856ada71af",
+			"name": "REQ-01",
+			"url": "https://petstore.swagger.io/v2/pet",
+			"time": 149,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Post status 200 - Body Corretos": true,
+				"Body do Post com id e tipo do id corretos": true,
+				"Body do Post com name e tipo name corretos": true,
+				"Body do Post com status e tipo do status corretos": true
+			},
+			"testPassFailCounts": {
+				"Post status 200 - Body Corretos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body do Post com id e tipo do id corretos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body do Post com name e tipo name corretos": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body do Post com status e tipo do status corretos": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				149
+			],
+			"allTests": [
+				{
+					"Post status 200 - Body Corretos": true,
+					"Body do Post com id e tipo do id corretos": true,
+					"Body do Post com name e tipo name corretos": true,
+					"Body do Post com status e tipo do status corretos": true
+				}
+			]
+		},
+		{
+			"id": "e4c39c84-ed05-4910-ab2e-a73eaffbef9d",
+			"name": "REQ-02",
+			"url": "https://petstore.swagger.io/v2/pet/2",
+			"time": 149,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Get status 200 com Dados diferentes do post": true
+			},
+			"testPassFailCounts": {
+				"Get status 200 com Dados diferentes do post": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				149
+			],
+			"allTests": [
+				{
+					"Get status 200 com Dados diferentes do post": true
+				}
+			]
+		},
+		{
+			"id": "afcf5863-ca2d-4e83-9540-989d80d09e1c",
+			"name": "REQ-03",
+			"url": "https://petstore.swagger.io/v2/pet/404",
+			"time": 150,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Get em pet inexistente": true
+			},
+			"testPassFailCounts": {
+				"Get em pet inexistente": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				150
+			],
+			"allTests": [
+				{
+					"Get em pet inexistente": true
+				}
+			]
+		},
+		{
+			"id": "7af57ad8-cc9c-4bad-8abd-1fda7ff53e7c",
+			"name": "REQ-04",
+			"url": "https://petstore.swagger.io/v2/pet/3176",
+			"time": 149,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Status code is 404": true
+			},
+			"testPassFailCounts": {
+				"Status code 200 - Pet deletado": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				149,
+				149
+			],
+			"allTests": [
+				{
+					"Status code 200 - Pet deletado": true
+				},
+				{
+					"Status code is 404": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 746,
+	"collection": {
+		"requests": [
+			{
+				"id": "e04a6101-b8c9-4d4e-929a-c5856ada71af",
+				"method": "POST"
+			},
+			{
+				"id": "e4c39c84-ed05-4910-ab2e-a73eaffbef9d",
+				"method": "GET"
+			},
+			{
+				"id": "afcf5863-ca2d-4e83-9540-989d80d09e1c",
+				"method": "GET"
+			},
+			{
+				"id": "7af57ad8-cc9c-4bad-8abd-1fda7ff53e7c",
+				"method": "DELETE"
+			},
+			{
+				"id": "7af57ad8-cc9c-4bad-8abd-1fda7ff53e7c",
+				"method": "DELETE"
+			}
+		]
+	}
+}

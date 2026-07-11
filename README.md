@@ -260,10 +260,20 @@ Aplicamos então uma interação, onde apagamos o pet criado no POST e logo apó
 
 O DELETE se comportou no esperado, seguindo o caminho feliz para o teste normal e o triste para quando não há pet para o id enviado.
 
-## Ferramentas: Por que escolheu o framework X ou Y para o Front?
+## Relatórios do Collection Runner
+
+A collection e enviroment do postman estão disponíveis na pasta postman:
+
+* [Coleção de Testes (Collection)](./postman/collections.json)
+* [Variáveis de Ambiente (Environment)](./postman/environment.json)
+
+Usando o trial do postman, conseguimos criar um relatório do Collection Runner do postman.
+Realizei 3 runs que demostram os seguintes cenário, gerando também imagens:
+
+* [Cenário perfeito, onde tudo ocorre corretamente](./postman/Run1.json). [Imagem](./src/postman_01%20(correto).png)
+* [Cenário do bug da API aceitando id como 'string'](./postman/Run2.json). [Imagem](./src/postman_02%20(id%20string%20bug).png)
+* [Cenário do bug da API aceitando e não validando os valores das 'strings' do name ou status](./post/Run3.json). [Imagem](./src/postman_03%20(number%20to%20string%20bug).png)
 
 ## Demonstração Viva: Mostre o Postman rodando e o teste de Front abrindo o navegador
-
-## Evidências: Mostre os relatórios gerados e os prints das capturas de tela
 
 ## Código: Explique como você fez para o teste de front identificar se o ano no texto estava correto

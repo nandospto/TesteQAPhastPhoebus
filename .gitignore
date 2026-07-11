@@ -1,4 +1,6 @@
 node_modules/
 reports/
+newman/
 *.log
 .DS_Store
+*.ignore
