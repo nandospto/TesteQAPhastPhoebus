@@ -121,7 +121,7 @@ Pelo guia do desafio, teriamos que pegar o id enviado na REQ-01 onde a resposta 
 O script inicial, antes da requisição, fica:
 
 ```javascript
-const idarraytest = [1, pm.collectionVariables.get("petId")];
+const idarraytest = [2, pm.collectionVariables.get("petId")];
 
 const idRNG = Math.floor(Math.random() * idarraytest.length);
 const petIdGet = idarraytest[idRNG];
@@ -180,6 +180,49 @@ if (caminhofeliz) {
 ### Comportamentos do GET
 
 O GET seguiu na conformidade do plano de teste, com dados iguais ao post, retorna o status code 200 e valida o tipo e os valores (novamente) dos valores da resposta. Com os dados diferentes, também há status code 200, porém não há validação dos dados, pois eles são diferentes dos dados criados no POST.
+
+### Análise do GET com o pet inexistente (REQ-03)
+
+Pelo guia, a REQ-03 é uma requisição simples de validação de um get em um PET inexistente. Diferente da REQ-02, o caminho feliz dessa requisação necessita de que o pet não exista no banco da API.
+
+O script de Pre-Request é dado por:
+
+```javascript
+const arrayid = [2, 404];
+
+const indexRNG = Math.floor(Math.random() * arrayid.length);
+pm.collectionVariables.set("petIdGet2", arrayid[indexRNG]);
+```
+
+Ele varia entre um valor que sabemos que existe no banco e outro que não existe. O valor é salvo em uma variável da collection "petIdGet2" onde é usada no endpoint.
+
+O script de Post-Response é:
+
+```javascript
+const response = pm.response.json();
+
+if (!response.id) {
+    pm.test("Get em pet inexistente", function () {
+        pm.response.to.have.status(404);
+    });
+} else {
+    pm.test("Get em pet existente", function(){
+        pm.response.to.have.status(200);
+    });
+}
+
+const petId = pm.collectionVariables.get("petId");
+
+if (typeof petId != 'number') {
+    pm.execution.setNextRequest(null);
+}
+```
+
+Aqui temos a mesma variação para o caso do REQ-01, onde se o POST do REQ-01 enviar um valor não aceito, a próxima requisição, REQ-04 (delete), não é disparada.
+
+### Comportamentos do GET de pet Inexistente
+
+Aqui o comportamento é mais simples, se o get retornar um pet (caminho triste) o status code é 200, caso não haja pet, o status code é 404. A validação é dada pela `response.id` onde sempre existe para pets que estão no banco da API.
 
 ## Ferramentas: Por que escolheu o framework X ou Y para o Front?
 
