@@ -66,6 +66,7 @@ const caminhoFeliz =
 if (caminhoFeliz) {
     pm.test("Post status 200 - Body Corretos", function () {
         pm.response.to.have.status(200);
+        pm.collectionVariables.set("InteraDel", 0);
     });
 } else if (typeof idRNG === 'string') {
     pm.test("Post status 500 - Id como string", function () {
@@ -106,7 +107,7 @@ if (pm.response.code === 200) {
 }
 ```
 
-Aqui, como a única request depois do POST que não precisa do petId é a REQ-03, adicionamos o `pm.execution.setNextRequest("REQ-03");` para pular a próxima requisição (GET) quando executamos collection run.
+Aqui, como a única request depois do POST que não precisa do petId é a REQ-03, adicionamos o `pm.execution.setNextRequest("REQ-03");` para pular a próxima requisição (GET) quando executamos collection run. O `pm.collectionVariables.set("InteraDel", 0);` é usado na REQ-04 para a interação multipla para teste do DELETE.
 
 ### Comportamentos do POST
 
@@ -223,6 +224,41 @@ Aqui temos a mesma variação para o caso do REQ-01, onde se o POST do REQ-01 en
 ### Comportamentos do GET de pet Inexistente
 
 Aqui o comportamento é mais simples, se o get retornar um pet (caminho triste) o status code é 200, caso não haja pet, o status code é 404. A validação é dada pela `response.id` onde sempre existe para pets que estão no banco da API.
+
+### Análise do DELETE (REQ-04)
+
+O DELETE é outro processo simples. Temos o caminho feliz, onde a requisição passa normalmente e deleta o pet do banco e o caminho triste é quando a requisição tenta apagar um pet que não existe.
+
+Para o pre-req:
+
+```javascript
+const myBody = JSON.parse(pm.collectionVariables.get("meuBody"));
+
+pm.collectionVariables.set("petIdDelete", myBody.id);
+```
+
+Aqui trazemos apenas o payload criado no POST para pegar o id correto do pet.
+
+```javascript
+if (pm.collectionVariables.get("InteraDel") == 0) {
+    pm.test("Status code 200 - Pet deletado", function () {
+        pm.collectionVariables.set("InteraDel", 1);
+        pm.response.to.have.status(200);
+        pm.execution.setNextRequest("REQ-04");
+    });
+} else {
+    pm.test("Status code is 404", function () {
+        pm.response.to.have.status(404);
+        pm.collectionVariables.set("InteraDel", 0);
+    });
+}
+```
+
+Aplicamos então uma interação, onde apagamos o pet criado no POST e logo após interagimos novamente de forma a verificar a situação do delete de um pet removido.
+
+### Comportamento do DELETE
+
+O DELETE se comportou no esperado, seguindo o caminho feliz para o teste normal e o triste para quando não há pet para o id enviado.
 
 ## Ferramentas: Por que escolheu o framework X ou Y para o Front?
 

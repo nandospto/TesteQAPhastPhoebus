@@ -74,3 +74,22 @@ Funcionalidade: Validação do EndPoint da pesquisa do Pet inexistente (REQ-03)
         Quando a requisição GET é disparada para o EndPoint
         Então o status code retornado deve ser 200
         E o body response deve conter os valores de um pet aleatório do banco
+
+Funcionalidade: Validação do EndPoint de remoção de Pets (REQ-03)
+    Como um analista de qualidade
+    Quero enviar uma requisição DELETE
+    Para garantir que API busque e remova uma entrada no banco
+
+    Contexto: Uma variável de Collection Criada
+        Dado a payload "meuBody" criado na collection
+        E os valores dessa variável podem haver um id existente ou inexistente
+
+    Cenário: [API] Remoção de um pet existente via DELETE (Caminho Feliz)
+        Dado a "id" disponibilizada pelo payload "meuBody"
+        Quando a requisição DELETE é disparada para o EndPoint
+        Então o status code retornado deve ser 200
+    
+    Cenário: [API] Remoção de um pet que não existe (Caminho Triste)
+        Dado a "id" disponibilizada pelo payload "meuBody" de um pet inexistente ou já removido
+        Quando a requisição DELETE é disparada para o EndPoint
+        Então o status code retornado deve ser 404

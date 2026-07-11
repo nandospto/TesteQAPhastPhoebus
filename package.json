@@ -1,0 +1,12 @@
+{
+  "name": "teste-qa-phoebus",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "newman run postman/Petstore_Collection.json -r html,json --reporter-html-export reports/report.html",
+    "test:verbose": "newman run postman/Petstore_Collection.json -r cli,html,json --reporter-html-export reports/report.html"
+  },
+  "devDependencies": {
+    "newman": "^latest",
+    "newman-reporter-html": "^latest"
+  }
+}
