@@ -7,24 +7,49 @@ Funcionalidade: Validação do EndPoint do cadatro de Pet (REQ-01)
     Para garantir que API processe, armazene e retorne os dados corretamente
 
     Contexto: Variáveis da Collection criadas
-        Dado que as variáveis "petId", "petName" e "petStatus", com valores aleatórios, foram criadas na collection de teste
+        Dado que o payload "meuBody" foi criado na collection de teste
+        E os valores e tipos dentro dessa payload são  "idRNG", "nameRNG" e "statusRNG" são aleatórios
 
     Cenário: [API] Criar um Pet com sucesso via POST (Caminho Feliz)
-        Quando envio uma requisição POST para o endpoint com as variáveis da collection escolhidas
+        Dado o payload "meuBody" da collection com as variáveis "idRNG", "nameRNG" e "statusRNG" com tipagem e valores corretos
+        Quando a requisição POST é disparada para o EndPoint
         Então o status code retornado deve ser 200
         E o body do response deve conter exatamente os mesmos valores enviados
 
-    Cenário: [API] Validar erro ao enviar payload com o "petId" com um tipo diferente de 'number' (Caminho Triste)
-        Dado que as variáveis "petId" estejam com um tipo de dado diferente de 'number'
+    Cenário: [API] Validar erro ao enviar payload com o "idRNG" com um tipo diferente de 'number' (Caminho Triste)
+        Dado que a variável "idRNG" esteja com um tipo de dado diferente de 'number'
         Quando envio a requisição POST para o endpoint
-        Então o status code retornado devve ser 400
+        Então o status code retornado deve ser 500
 
-    Cenário: [API] Validar erro ao enviar payload com o "petName" com um tipo diferente de 'string' (Caminho Triste)
-        Dado que as variáveis "petName" estejam com um tipo de dado diferente de 'string'
+    Cenário: [API] Validar erro ao enviar payload com o "nameRNG" com um tipo diferente de 'string' (Caminho Triste)
+        Dado que a variável "nameRNG" esteja com um tipo de dado diferente de 'string'
         Quando envio a requisição POST para o endpoint
-        Então o status code retornado devve ser 400
+        Então o status code retornado deve ser 400
 
-    Cenário: [API] Validar erro ao enviar payload com o "petStatus" com um tipo diferente de 'string' (Caminho Triste)
-        Dado que as variáveis "petStatus" estejam com um tipo de dado diferente de 'string'
+    Cenário: [API] Validar erro ao enviar payload com o "statusRNG" com um tipo diferente de 'string' (Caminho Triste)
+        Dado que as variáveis "statusRNG" estejam com um tipo de dado diferente de 'string'
+        Ou a variável não está presente no array dado pelas strings "available", "pending" e "sold"
         Quando envio a requisição POST para o endpoint
-        Então o status code retornado devve ser 400
+        Então o status code retornado deve ser 400
+
+Funcionalidade: Validação do EndPoint da pesquisa do Pet criado (REQ-02)
+    Como um analista de qualidade
+    Quero enviar uma requisição GET com os parâmetros id, name e status feitos na REQ-01
+    Para garantir que API busque e retorne os dados corretamente
+
+    Contexto: Variáveis da Collection criadas
+        Dado que o payload "meuBody" foi criado na collection de teste depois do POST
+        E os valores e tipos dentro dessa payload são  "idRNG", "nameRNG" e "statusRNG" são aleatórios
+        E a variável da collection "petIdGet" que varia entre o pet do POST e um pet aleatório
+
+    Cenário: [API] Buscar um Pet com sucesso via GET (Caminho Feliz)
+        Dado o payload "meuBody" da collection com as variáveis "idRNG", "nameRNG" e "statusRNG" com tipagem e valores corretos
+        Quando a requisição GET é disparada para o EndPoint com o "petIdGet" igual do "idRNG"
+        Então o status code retornado deve ser 200
+        E o body do response deve conter exatamente os mesmos valores da variável da collection "meuBody"
+    
+    Cenário: [API] Buscar um Pet com sucesso via Get, mas com dados diferentes (Caminho Triste)
+        Dado o payload "meuBody" da collection com as variáveis "idRNG", "nameRNG" e "statusRNG" com tipagem e valores corretos
+        Quando a requisição GET é disparada para o EndPoint com o "petIdGet" diferente do "idRNG"
+        Então o status code retornado deve ser 200
+        E o body do response deve conter valores diferentes da variável da collection "meuBody"
