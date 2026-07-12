@@ -274,6 +274,48 @@ Realizei 3 runs que demostram os seguintes cenário, gerando também imagens:
 * [Cenário do bug da API aceitando id como 'string'](./postman/Run2.json). [Imagem](./src/postman_02%20(id%20string%20bug).png)
 * [Cenário do bug da API aceitando e não validando os valores das 'strings' do name ou status](./post/Run3.json). [Imagem](./src/postman_03%20(number%20to%20string%20bug).png)
 
-## Demonstração Viva: Mostre o Postman rodando e o teste de Front abrindo o navegador
+### Cypress e Teste do Frontend
 
-## Código: Explique como você fez para o teste de front identificar se o ano no texto estava correto
+Para usar o cypress, é necessário instalá0lo em uma pasta separada para o projeto. Instalei o node e cypress na pasta frontend usando `npm init` e `npm install cypress --save-dev`.
+
+Agora vamos instalar o mochawsome com `npm install mocha mochawesome mochawesome-merge mochawesome-report-generator --save-dev` que irá gerar os relatórios.
+
+Abrindo o cypress com `npx cypress open` e fazendo a configuração de e2e com o EDGE, podemos fazer um novo spec de teste para o teste da phoebus.
+
+O arquivo gerado é o [phoebustest.cy.js](./frontend/cypress/e2e/phoebustest.cy.js).
+
+Antes, devemos saber como funciona o site da phoebus para adicionar para o teste. O elemento `<a>` de história tem um `data-testid="linkElement"`, vamos utilizá-lo no cypress, da mesma forma que os botões tem `data-testid="buttonContent"` e o slider do texto `[data-testid="slidesWrapper"][aria-live="polite"]`. Esse último é importante, pois enquanto podemos filtrar a componente `<a>` com o texto "História" e os botões com os anos, o conteudo dos sliders variam, mas os outros tem a tag `alira-live="off"`.
+
+Aqui o script de automação do teste:
+
+```javascript
+describe('Teste da phoebus para o FrontEnd', () => {
+  it('Navegar pelo site até a parte de história e anos', () => {
+    cy.viewport(1920, 1080);
+    cy.visit('https://phoebus.com.br');
+    
+    cy.wait(3000);
+    cy.get('[data-testid="linkElement"]').contains('HISTÓRIA').click();
+    
+    const testedosanos = [2000, 2010, 2020];
+
+    cy.wait(3000);
+    testedosanos.forEach((ano) => {
+      cy.get('[data-testid="buttonContent"]').contains(ano).click({ scrollBehavior: false, force: true });
+      cy.wait(1000);
+      cy.get('[data-testid="slidesWrapper"][aria-live="polite"]').should('contain', ano);
+      cy.screenshot(`historia-ano-${ano}`, {capture: 'viewport'});
+    });
+  })
+})
+```
+
+Fixei a viewport para manter o site consistente com um tamanho, acessamos o site com o `cy.visit('https://phoebus.com.br')` e aguardamos 3 segundos para deixar o site carregar antes de clicar. A componente é filtrada tanto pela tag (boas práticas na documentação do cypress) quanto pelo conteúdo contendo "HISTÓRIA". Atribuimos um array de teste para os anos que quisermos, aguardamos 3 segundos até a rolagem chegar na componente do texto de história.
+
+Adicionei o `{ scrollBehavior: false, force: true }`, pois o click simples estava fazendo a tela rolar para baixo. Aguardamos 1 segundo e então temos a validação do slider que deve conter o ano testado. Logo em seguida salvamos uma captura de tela fixando o viewport completo.
+
+Para gerar o relatório usando o mochawesome, utilizei `npm install --save-dev cypress-mochawesome-reporter` que adiciona automaticamente as capturas de tela. Então só precisamos adicionar o mocha às configs do cypress e executar o npx cypress run.
+
+Obtemos o relatório no [arquivo](./frontend/cypress/reports/index.html).
+
+E as capturas de tela do mocha estão na pasta [screenshots](./frontend/cypress/screenshots/phoebustest.cy.js/).
